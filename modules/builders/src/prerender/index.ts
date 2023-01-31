@@ -118,11 +118,17 @@ async function _renderUniversal(
         throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
       }
 
-      const spinner = ora(`Prerendering ${routes.length} route(s) to ${outputPath}...`).start();
+      const routesLocale = [];
+      for(const route of routes){
+        if (route.indexOf('/'+localeDirectory)>-1){
+          routesLocale.push(route.replace("/"+localeDirectory,""));
+        }
+      }
+      const spinner = ora(`Prerendering ${routesLocale.length} route(s) to ${outputPath}...`).start();
 
       try {
         const results = (await Promise.all(
-          routes.map((route) => {
+          routes.map((routesLocale) => {
             const options: RenderOptions = {
               indexFile,
               deployUrl: browserOptions.deployUrl || '',
